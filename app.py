@@ -6,7 +6,7 @@ import numpy as np
 # إنشاء التطبيق
 app = FastAPI(
     title="Breast Cancer Prediction API",
-    description="Predict Breast Cancer using Machine Learning",
+    description="Machine Learning API for Breast Cancer Prediction",
     version="1.0"
 )
 
@@ -16,7 +16,7 @@ model = joblib.load("breast_cancer_model.pkl")
 # model = joblib.load("model.pkl")
 
 
-# شكل البيانات اللي المستخدم هيبعتها
+# شكل البيانات المطلوبة
 class CancerData(BaseModel):
     features: list[float]
 
@@ -33,19 +33,19 @@ def home():
 @app.post("/predict")
 def predict(data: CancerData):
 
-    # التأكد إن عدد الـ Features = 30
+    # التأكد من عدد الخصائص
     if len(data.features) != 30:
         return {
-            "error": "You must send exactly 30 features."
+            "error": "Please enter exactly 30 features."
         }
 
-    # تحويل البيانات لـ NumPy Array
+    # تحويل البيانات إلى NumPy Array
     input_data = np.array(data.features).reshape(1, -1)
 
     # التنبؤ
     prediction = model.predict(input_data)[0]
 
-    # تحويل الرقم إلى نص
+    # تحويل النتيجة إلى نص
     if prediction == 0:
         result = "Malignant"
     else:
